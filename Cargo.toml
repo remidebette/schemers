@@ -1,0 +1,11 @@
+[package]
+name = "schemers"
+version = "0.1.0"
+description = "Scheme interpreter written in Rust!"
+authors = ["Michael Gattozzi <mgattozzi@gmail.com>"]
+readme = "README.md"
+license = "MIT OR Apache-2.0"
+homepage = "https://github.com/mgattozzi/schemers"
+repository = "https://github.com/mgattozzi/schemers"
+
+[dependencies]
