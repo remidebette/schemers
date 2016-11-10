@@ -5,12 +5,18 @@ fn main() {
     while !done {
         match reader.readline(">> ") {
             Ok(line) =>
-                if line == "(exit)" {
+                if line.trim() == "(exit)" {
                     done = true;
                 } else {
                     println!("{}",line)
                 },
-            Err(e) => println!("Couldn't readline. Error was: {}", e),
+            Err(e) => {
+                use rustyline::error::ReadlineError::*;
+                match e {
+                    Eof | Interrupted => done = true,
+                    _ => println!("Couldn't readline. Error was: {}", e),
+                }
+            }
         }
     }
 }
