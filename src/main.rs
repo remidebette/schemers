@@ -54,6 +54,9 @@ fn parse(line: &str) -> Result<String, ParseError> {
 //                                                                             //
 //-----------------------------------------------------------------------------//
 
+/// Type alias that's more descriptive then a true or false
+type SyntaxOkay = bool;
+
 /// Check that the syntax is correct for the whole Scheme expression
 fn syntax_check(line: &str) -> Result<String, ParseError> {
     if check_paren(line) {
@@ -64,7 +67,7 @@ fn syntax_check(line: &str) -> Result<String, ParseError> {
 }
 
 /// Checks to see if all of the parentheses have a matching one
-fn check_paren(line: &str) -> bool {
+fn check_paren(line: &str) -> SyntaxOkay {
     let mut count = 0;
 
     for i in line.chars() {
@@ -115,4 +118,24 @@ impl error::Error for ParseError {
             MisMatchedParen => "Unbalanced number of parentheses"
         }
     }
+}
+
+//-----------------------------------------------------------------------------//
+//                                                                             //
+//                               Test Suite                                    //
+//                                                                             //
+//-----------------------------------------------------------------------------//
+#[cfg(test)]
+mod sytnax_tests {
+    use super::check_paren;
+
+    #[test]
+    fn parentheses_checks() {
+        assert_eq!(check_paren("(())"), true);
+        assert_eq!(check_paren(")()"), false);
+        assert_eq!(check_paren("(()"), false);
+        assert_eq!(check_paren("(test)"), true);
+        assert_eq!(check_paren("(test"), false);
+    }
+
 }
