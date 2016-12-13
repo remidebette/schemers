@@ -10,3 +10,4 @@ repository = "https://github.com/mgattozzi/schemers"
 
 [dependencies]
 rustyline = "1.0.0"
+nom = "^2.0.0"
