@@ -10,7 +10,7 @@ fn main() {
     loop {
         match reader.readline(">> ") {
             Ok(line) => {
-                if line == "(exit)" {
+                if line.trim() == "(exit)" {
                     break;
                 } else {
                     println!("{}", line);
