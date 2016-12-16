@@ -6,7 +6,7 @@ named!(procedure<&[u8], Procedure>,
     do_parse!(
         tag!("(")   >>
         op_type: op >>
-        arguments: many1!(string) >>
+        arguments: ws!(many0!(string)) >>
         tag!(")")   >>
         (Procedure { op: op_type, args: arguments  })
     )
@@ -14,9 +14,9 @@ named!(procedure<&[u8], Procedure>,
 
 named!(op<&[u8], Op>,
     alt!(
-        specialform |
-        primitive   |
-        user
+        ws!(specialform) |
+        ws!(primitive)   |
+        ws!(user)
     )
 );
 
@@ -53,20 +53,20 @@ named!(string<&[u8], String>,
     )
 );
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 enum Op {
     Primitive(Prim),
     SpecialForm(SForm),
     User(String),
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 struct Procedure {
     op: Op,
     args: Vec<String>
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 enum Prim {
     Add,
     Sub,
@@ -74,7 +74,7 @@ enum Prim {
     Div,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 enum SForm {
     If,
     Begin,
@@ -84,7 +84,116 @@ enum SForm {
 }
 
 #[test]
-fn parens_test() {
-    let parsed = procedure(b"(+ hi hello what is up)");
-    println!("{:#?}", parsed);
+fn string_parser() {
+    match string(b"hi") {
+        IResult::Done(_,s) => assert_eq!(String::from("hi"), s),
+        _ => panic!("Failed to parse string")
+    }
+
+    match string(b"   hi    ") {
+        IResult::Done(_,s) => assert_eq!(String::from("hi"), s),
+        _ => panic!("Failed to parse string")
+    }
+
+    match string(b"hi      ") {
+        IResult::Done(_,s) => assert_eq!(String::from("hi"), s),
+        _ => panic!("Failed to parse string")
+    }
+
+    match string(b"        hi") {
+        IResult::Done(_,s) => assert_eq!(String::from("hi"), s),
+        _ => panic!("Failed to parse string")
+    }
+}
+
+#[test]
+fn user_op_parser() {
+    match user(b"userop") {
+        IResult::Done(_,s) => assert_eq!(Op::User(String::from("userop")), s),
+        _ => panic!("Failed to parse userop")
+    }
+}
+
+#[test]
+fn specialform_op_parser() {
+    match specialform(b"if") {
+        IResult::Done(_,a) => assert_eq!(Op::SpecialForm(SForm::If), a),
+        _ => panic!("Failed to parse special form")
+    }
+    match specialform(b"begin") {
+        IResult::Done(_,a) => assert_eq!(Op::SpecialForm(SForm::Begin), a),
+        _ => panic!("Failed to parse special form")
+    }
+    match specialform(b"define") {
+        IResult::Done(_,a) => assert_eq!(Op::SpecialForm(SForm::Define), a),
+        _ => panic!("Failed to parse special form")
+    }
+    match specialform(b"lambda") {
+        IResult::Done(_,a) => assert_eq!(Op::SpecialForm(SForm::Lambda), a),
+        _ => panic!("Failed to parse special form")
+    }
+    match specialform(b"let") {
+        IResult::Done(_,a) => assert_eq!(Op::SpecialForm(SForm::Let), a),
+        _ => panic!("Failed to parse special form")
+    }
+}
+
+#[test]
+fn primitive_op_parser() {
+    match primitive(b"+") {
+        IResult::Done(_,a) => assert_eq!(Op::Primitive(Prim::Add), a),
+        _ => panic!("Failed to parse primitive")
+    }
+    match primitive(b"*") {
+        IResult::Done(_,a) => assert_eq!(Op::Primitive(Prim::Mul), a),
+        _ => panic!("Failed to parse primitive")
+    }
+    match primitive(b"-") {
+        IResult::Done(_,a) => assert_eq!(Op::Primitive(Prim::Sub), a),
+        _ => panic!("Failed to parse primitive")
+    }
+    match primitive(b"/") {
+        IResult::Done(_,a) => assert_eq!(Op::Primitive(Prim::Div), a),
+        _ => panic!("Failed to parse primitive")
+    }
+}
+
+#[test]
+fn op_parser() {
+    match op(b"  +   ") {
+        IResult::Done(_,a) => assert_eq!(Op::Primitive(Prim::Add), a),
+        _ => panic!("Failed to parse primitive")
+    }
+    match op(b"   let   ") {
+        IResult::Done(_,a) => assert_eq!(Op::SpecialForm(SForm::Let), a),
+        _ => panic!("Failed to parse primitive")
+    }
+    match op(b"   myprocedure   ") {
+        IResult::Done(_,a) => assert_eq!(Op::User(String::from("myprocedure")), a),
+        _ => panic!("Failed to parse primitive")
+    }
+}
+
+#[test]
+fn procedure_test() {
+
+    let procedure_num = Procedure {
+        op: Op::Primitive(Prim::Add),
+        args: vec!["1".to_string(), "2".to_string(), "3".to_string(), "4".to_string()]
+    };
+
+    let procedure_user = Procedure {
+        op: Op::User(String::from("myprocedure")),
+        args: Vec::new()
+    };
+
+    match procedure(b"(+ 1 2 3 4)") {
+        IResult::Done(_,a) => assert_eq!(procedure_num, a),
+        _ => panic!("Failed to parse primitive")
+    }
+
+    match procedure(b"(myprocedure)") {
+        IResult::Done(_,a) => assert_eq!(procedure_user, a),
+        _ => panic!("Failed to parse primitive")
+    }
 }
