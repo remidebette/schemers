@@ -3,7 +3,9 @@ Let's write a Scheme interpreter and learn some Rust along the way!
 
 ## Tutorial Articles
 
-- [Input](http://mgattozzi.github.io/2016/11/08/scheme-input.html)
+- [Input](http://mgattozzi.com/scheme-input.html)
+- [Exercise 1](http://mgattozzi.com/scheme-ex1.html)
+- [Parser 1](http://mgattozzi.com/scheme-parser.html)
 
 ## License
 
