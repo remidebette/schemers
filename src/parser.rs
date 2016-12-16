@@ -110,7 +110,7 @@ fn string_parser() {
 fn user_op_parser() {
     match user(b"userop") {
         IResult::Done(_,s) => assert_eq!(Op::User(String::from("userop")), s),
-        _ => panic!("Failed to parse userop")
+        _ => panic!("Failed to parse user op")
     }
 }
 
@@ -166,11 +166,11 @@ fn op_parser() {
     }
     match op(b"   let   ") {
         IResult::Done(_,a) => assert_eq!(Op::SpecialForm(SForm::Let), a),
-        _ => panic!("Failed to parse primitive")
+        _ => panic!("Failed to parse special form")
     }
     match op(b"   myprocedure   ") {
         IResult::Done(_,a) => assert_eq!(Op::User(String::from("myprocedure")), a),
-        _ => panic!("Failed to parse primitive")
+        _ => panic!("Failed to parse user op")
     }
 }
 
@@ -189,11 +189,11 @@ fn procedure_test() {
 
     match procedure(b"(+ 1 2 3 4)") {
         IResult::Done(_,a) => assert_eq!(procedure_num, a),
-        _ => panic!("Failed to parse primitive")
+        _ => panic!("Failed to parse procedure")
     }
 
     match procedure(b"(myprocedure)") {
         IResult::Done(_,a) => assert_eq!(procedure_user, a),
-        _ => panic!("Failed to parse primitive")
+        _ => panic!("Failed to parse procedure")
     }
 }
