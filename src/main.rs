@@ -1,8 +1,6 @@
 extern crate rustyline;
-#[macro_use]
-extern crate nom;
 
-mod parser;
+mod lexer;
 
 /// Our main driver loop for our REPL
 fn main() {

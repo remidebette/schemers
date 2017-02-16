@@ -7,7 +7,11 @@ readme = "README.md"
 license = "MIT OR Apache-2.0"
 homepage = "https://github.com/mgattozzi/schemers"
 repository = "https://github.com/mgattozzi/schemers"
+build = "build.rs"
 
 [dependencies]
 rustyline = "1.0.0"
-nom = "^2.0.0"
+lalrpop-util = "^0.12"
+
+[build-dependencies]
+lalrpop = "^0.12"
