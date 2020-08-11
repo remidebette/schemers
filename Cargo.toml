@@ -1,13 +1,15 @@
 [package]
 name = "schemers"
-version = "0.1.0"
+version = "0.2.0"
 description = "Scheme interpreter written in Rust!"
-authors = ["Michael Gattozzi <mgattozzi@gmail.com>"]
+authors = ["remidebette <remi.debette@gmail.com>"]
+edition = "2018"
+
 readme = "README.md"
 license = "MIT OR Apache-2.0"
-homepage = "https://github.com/mgattozzi/schemers"
-repository = "https://github.com/mgattozzi/schemers"
+homepage = "https://github.com/remidebette/schemers"
+repository = "https://github.com/remidebette/schemers"
 
 [dependencies]
-rustyline = "1.0.0"
-nom = "^2.0.0"
+rustyline = "6.2.0"
+nom = "5.1.2"
