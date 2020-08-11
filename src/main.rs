@@ -1,8 +1,9 @@
 extern crate rustyline;
-#[macro_use]
 extern crate nom;
 
 mod parser;
+
+use rustyline::error::ReadlineError;
 
 /// Our main driver loop for our REPL
 fn main() {
@@ -16,14 +17,15 @@ fn main() {
                     println!("{}", line);
                 }
             },
-            Err(e) => {
-                use rustyline::error::ReadlineError::*;
-                match e {
-                    // Close the program on a Ctrl-C or Ctrl-D
-                    Eof | Interrupted => break,
-                    _ => println!("Couldn't readline. Error was: {}", e),
-                }
+            Err(ReadlineError::Interrupted) => {
+                println!("CTRL-C");
+                break;
             },
+            Err(ReadlineError::Eof) => {
+                println!("CTRL-D");
+                break;
+            },
+            Err(e) => println!("Couldn't readline. Error was: {}", e),
         }
     }
 }
